@@ -16,6 +16,10 @@ const userSchmea = new mongoose.Schema(
       type: String,
       required: true,
     },
+    profilePicture: {
+      type: String,
+      default:"https://www.pngarts.com/files/10/Default-Profile-Picture-PNG-Transparent-Image.png",
+    }
   },
   {
     timestamps: true,
