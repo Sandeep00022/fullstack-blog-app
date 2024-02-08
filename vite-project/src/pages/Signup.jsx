@@ -32,7 +32,7 @@ const Signup = () => {
       if (res.ok) {
         navigate("/sign-in");
       }
-      if (data.statusCode === 500) {
+      if (data.success === false) {
         setLoading(false);
         return setErrormessage(data.message);
       }
