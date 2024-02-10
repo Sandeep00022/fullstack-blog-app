@@ -8,6 +8,7 @@ export const test = (req, res) => {
 };
 
 export const updateUser = async (req, res, next) => {
+
   if (req.user.id !== req.params.userId) {
     return next(errorHandler(403, "You are not allowed to upadate this user"));
   }
@@ -30,11 +31,12 @@ export const updateUser = async (req, res, next) => {
     if (req.body.username !== req.body.username.toLowerCase()) {
       return next(errorHandler(400, "Username must be lowercase"));
     }
-    if (req.body.username.match(/^[a-zA-Z0-9]+$/)) {
-      return next(
-        errorHandler(400, "Username can only contain letters and numbers")
-      );
-    }
+    // if (req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+    //   return next(
+    //     errorHandler(400, "Username can only contain letters and numbers")
+    //   );
+    // }
+  }
     try {
       const updateUser = await User.findByIdAndUpdate(req.params.userId, {
         $set: {
@@ -49,5 +51,5 @@ export const updateUser = async (req, res, next) => {
     } catch (error) {
       
     }
-  }
+  
 };
