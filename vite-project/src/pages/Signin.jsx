@@ -108,7 +108,7 @@ const Signin = () => {
                 "Sign In"
               )}
             </Button>
-            <Oauth/>
+            <Oauth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span> Dont Have an account?</span>

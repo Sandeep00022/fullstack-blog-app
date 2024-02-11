@@ -10,8 +10,7 @@ import Header from "./components/Header";
 import { FooterCom } from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminPrivateRoute from "./components/AdminPrivateRoute";
-import { CreatePost } from "./pages/createPost";
-
+import { CreatePostHere } from "./pages/CreatePostHere";
 
 const App = () => {
   return (
@@ -26,7 +25,7 @@ const App = () => {
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
         <Route element={<AdminPrivateRoute />}>
-          <Route path="/create-post" element={<CreatePost/>} />
+          <Route path="/create-post" element={<CreatePostHere />} />
         </Route>
         <Route path="/projects" element={<Projects />} />
       </Routes>
