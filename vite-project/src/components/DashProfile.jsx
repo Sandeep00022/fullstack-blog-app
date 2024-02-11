@@ -10,7 +10,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { updateFailure, updateStart, updateSuccess } from "../redux/user/userSlice";
+import {
+  updateFailure,
+  updateStart,
+  updateSuccess,
+} from "../redux/user/userSlice";
 export const DashProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
@@ -19,6 +23,9 @@ export const DashProfile = () => {
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const filePickerRef = useRef();
   const [formData, setFormData] = useState({});
+  const [imageUplaoding, setImageUploading] = useState(false);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [updateUserError, setUpdateUserError] = useState(null);
 
   console.log("====================================");
   console.log(imageFileUploadProgress, imageFileUploadError);
@@ -51,7 +58,8 @@ export const DashProfile = () => {
     //     }
     //   }
     // }
-
+    setImageUploading(true);
+    setImageFileUploadError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -75,6 +83,7 @@ export const DashProfile = () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
           setFormData({ ...formData, profilePicture: downloadURL });
+          setImageUploading(false);
         });
       }
     );
@@ -86,10 +95,17 @@ export const DashProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUpdateUserError(null);
+    setUpdateUserSuccess(null);
     if (Object.keys(formData).length === 0) {
+      setUpdateUserError("No changes made");
       return;
     }
+    if (imageUplaoding) {
+      setUpdateUserError("Please wait for image to upload");
 
+      return;
+    }
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/update/${currentUser._id}`, {
@@ -101,17 +117,17 @@ export const DashProfile = () => {
       });
 
       const data = await res.json();
-
-        if(!res.ok) {
-          dispatch(updateFailure(data.message))
-        }
-        else{
-          dispatch(updateSuccess(data))
-        }
-
-
+      setFormData({});
+      if (!res.ok) {
+        dispatch(updateFailure(data.message));
+        setUpdateUserError(data.message);
+      } else {
+        dispatch(updateSuccess(data));
+        setUpdateUserSuccess("user's profile updatd successfully");
+      }
     } catch (error) {
-       dispatch(updateFailure(error.message))
+      dispatch(updateFailure(error.message));
+      setUpdateUserError(error.message);
     }
   };
 
@@ -196,6 +212,16 @@ export const DashProfile = () => {
         <span className="cursor-pointer">Delete Account</span>
         <span className="cursor-pointer">Sign Out</span>
       </div>
+      {updateUserSuccess && (
+        <Alert color="success" className="mt-5">
+          {updateUserSuccess}
+        </Alert>
+      )}
+      {updateUserError && (
+        <Alert color="failure" className="mt-5">
+          {updateUserError}
+        </Alert>
+      )}
     </div>
   );
 };

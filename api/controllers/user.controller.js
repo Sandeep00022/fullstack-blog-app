@@ -2,13 +2,11 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import User from "../models/user.model.js";
 
-
 export const test = (req, res) => {
   res.json({ message: "API is working " });
 };
 
 export const updateUser = async (req, res, next) => {
-
   if (req.user.id !== req.params.userId) {
     return next(errorHandler(403, "You are not allowed to upadate this user"));
   }
@@ -37,19 +35,20 @@ export const updateUser = async (req, res, next) => {
     //   );
     // }
   }
-    try {
-      const updateUser = await User.findByIdAndUpdate(req.params.userId, {
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      {
         $set: {
           username: req.body.username,
           email: req.body.email,
           profilePicture: req.body.profilePicture,
           password: req.body.password,
         },
-      }, {new:true});
-      const {password, ...rest} = updateUser._doc;
-       res.status(200).json(rest);
-    } catch (error) {
-      
-    }
-  
+      },
+      { new: true }
+    );
+    const { password, ...rest } = updateUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {}
 };
