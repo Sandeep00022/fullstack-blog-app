@@ -3,7 +3,7 @@ import { Button, Modal, Table } from "flowbite-react";
 import React, { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import {FaCheck, FaTimes} from 'react-icons/fa'
+import { FaCheck, FaTimes } from "react-icons/fa";
 
 export const DashUsers = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -50,22 +50,19 @@ export const DashUsers = () => {
   };
 
   const handleDeleteUser = async () => {
-    setShowModal(false);
     try {
-      const res = await fetch(
-        `/api/user/deleteuser/${userIdToDelete}/${currentUser._id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`/api/delete/${userIdToDelete}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
-      if (!res.ok) {
-        console.log(data.message);
+      if (res.ok) {
+        setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+        setShowModal(false)
       } else {
-        setUsers((prev) => prev.filter((post) => post._id !== userIdToDelete));
+        console.log(data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
@@ -100,7 +97,13 @@ export const DashUsers = () => {
                   </Table.Cell>
                   <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.email}</Table.Cell>
-                  <Table.Cell>{user.isAdmin ? (<FaCheck className="text-green-500" />) : (<FaTimes className="text-red-500" />)}</Table.Cell>
+                  <Table.Cell>
+                    {user.isAdmin ? (
+                      <FaCheck className="text-green-500" />
+                    ) : (
+                      <FaTimes className="text-red-500" />
+                    )}
+                  </Table.Cell>
                   <Table.Cell>
                     <span
                       onClick={() => {
