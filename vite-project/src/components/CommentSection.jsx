@@ -86,7 +86,15 @@ export const CommentSection = ({ postId }) => {
       console.log(error);
     }
   };
-  console.log(comments);
+
+  const handleEdit = async (comment, editedContent) => {
+    setComments(
+      comments.map((c) =>
+        c._id === comment._id ? { ...comment, content: editedContent } : c
+      )
+    );
+  };
+
   return (
     <div className="max-w-2xl mx-auto w-full p-3">
       {currentUser ? (
@@ -155,6 +163,7 @@ export const CommentSection = ({ postId }) => {
                 key={comment._id}
                 comment={comment}
                 onLike={hanldeLike}
+                onEdit={handleEdit}
               />
             ))}
         </>
