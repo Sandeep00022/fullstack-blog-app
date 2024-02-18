@@ -51,7 +51,7 @@ export const getPosts = async (req, res, next) => {
       .skip(startIndex)
       .limit(limit);
 
-    const totlaPost = await Post.countDocuments();
+    const totalPost = await Post.countDocuments();
 
     const now = new Date();
 
@@ -67,7 +67,7 @@ export const getPosts = async (req, res, next) => {
 
     res.status(200).json({
       posts,
-      totlaPost,
+      totalPost,
       lastMonthPosts,
     });
   } catch (error) {
